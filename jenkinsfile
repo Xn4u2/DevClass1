@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage ('Clone repository'){
+            steps {
+                echo 'Clone repository'
+            }
+        }
+        stage ('Build'){
+            steps {
+                echo 'Building the project'
+            }
+        }
+        stage ('Test'){
+            steps {
+                echo 'Testing the project'
+            }
+        }
+        stage ('Deploy'){
+            steps {
+                echo 'Deploying the project'
+            }
+        }
+        stage ('Deploy to Heroku'){
+            steps {
+                withCredentials([usernameColonPassword(credentialsId: 'Heroku', variable: 'HEROKU_CREDENTIALS')]){
+                    sh 'git push https://${'HEROKU_CREDENTIALS'}@git.hroku.com/devops1b.git master'     
+            }
+        }
+    }
+    
+    
+    post {
+        
+        success {
+            slackSend color: "good", message: "Message from Jenkins pipeline"
+        }
+    }
